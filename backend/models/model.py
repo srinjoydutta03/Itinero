@@ -199,6 +199,7 @@ class SessionState(BaseModel):
     agents_run: list[str] = Field(default_factory=list)
     replanned_agents: list[str] = Field(default_factory=list)
     errors: list[str] = Field(default_factory=list)
+    llm_summary: Optional[str] = None
     updated_at: Optional[datetime] = None
 
 

@@ -575,6 +575,7 @@ async def run_full_plan(request: PlanRequest) -> TravelPlanResponse:
         budget=structured.get("budget"),
         agents_run=agents_run,
         errors=tracker.errors,
+        llm_summary=final_text,
     )
     save_session(session)
 
@@ -698,6 +699,7 @@ def _session_to_response(
         agents_run=session.agents_run,
         replanned_agents=replanned,
         errors=session.errors,
+        llm_summary=session.llm_summary,
     )
 
 
@@ -858,10 +860,11 @@ async def run_chat_turn(
                 save_session(session)
 
                 # Build the full response so the frontend can update
+                # Preserve the original llm_summary from initial planning —
+                # the chat reply is returned separately in "text"/"reply".
                 response_obj = _session_to_response(
                     session, replanned=list(structured.keys()),
                 )
-                response_obj.llm_summary = final_text
                 updated_plan_dict = response_obj.model_dump(mode="json")
 
     return {
