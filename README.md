@@ -26,7 +26,7 @@ Itinero is a full-stack travel planning application that uses **Claude as an orc
 ```
 ┌──────────────────────────────────────────────────────────────┐
 │                   Frontend (React + Vite)                     │
-│                     localhost:5173                            │
+│                     localhost:3001                            │
 │  ┌──────────┐  ┌────────────┐  ┌───────────────────────────┐ │
 │  │  Home    │→ │ Dashboard  │  │  Chat Sidebar             │ │
 │  │  (Form)  │  │ (5 Tabs)   │  │  (modifies plan live)     │ │
@@ -171,11 +171,11 @@ cp .env.example .env
 cd backend
 uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
-# Terminal 2 — Frontend (port 5173)
+# Terminal 2 — Frontend (port 3001)
 npm run dev
 ```
 
-Open **http://localhost:5173** in your browser.
+Open **http://localhost:3001** in your browser.
 
 ---
 
