@@ -1,19 +1,21 @@
 import { useState, useEffect } from "react";
 import { Layout } from "@/components/layout";
-import { generateMockItinerary, type Itinerary } from "@/lib/mockData";
+import { generateMockItinerary, type Itinerary, type Activity } from "@/lib/mockData";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { 
   CloudSun, 
   Plane, 
   Train, 
   Star,
   MessageSquare, 
-  Send
+  Send,
+  Sparkles
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -23,6 +25,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [activeDay, setActiveDay] = useState(1);
   const [chatOpen, setChatOpen] = useState(true);
+  const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
 
   useEffect(() => {
     // Simulate AI loading
@@ -146,7 +149,11 @@ export default function Dashboard() {
                       className="space-y-4"
                     >
                       {itinerary.days.find(d => d.day === activeDay)?.activities.map((activity, idx) => (
-                        <div key={activity.id} className="group relative flex gap-6 rounded-2xl border bg-card p-4 transition-all hover:shadow-md">
+                        <div 
+                          key={activity.id} 
+                          className="group relative flex gap-6 rounded-2xl border bg-card p-4 transition-all hover:shadow-md hover:border-primary/20 cursor-pointer"
+                          onClick={() => setSelectedActivity(activity)}
+                        >
                           {/* Timeline Line */}
                           {idx !== itinerary.days.find(d => d.day === activeDay)?.activities.length! - 1 && (
                             <div className="absolute left-[3.25rem] top-16 h-[calc(100%+1rem)] w-[2px] bg-border group-hover:bg-primary/20"></div>
@@ -361,6 +368,68 @@ export default function Dashboard() {
              <MessageSquare className="h-6 w-6" />
            </Button>
         )}
+
+        {/* Activity Details Dialog */}
+        <Dialog open={!!selectedActivity} onOpenChange={(open) => !open && setSelectedActivity(null)}>
+          <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden">
+            {selectedActivity && (
+              <>
+                <div className="relative h-56 w-full">
+                  <img 
+                    src={selectedActivity.image} 
+                    alt={selectedActivity.name} 
+                    className="h-full w-full object-cover"
+                  />
+                  <div className="absolute top-4 right-4">
+                     <Badge className="bg-white/90 text-foreground shadow-sm backdrop-blur-md hover:bg-white/90 capitalize">
+                       {selectedActivity.type}
+                     </Badge>
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <h2 className="text-2xl font-serif font-bold leading-tight">{selectedActivity.name}</h2>
+                    <div className="flex items-center gap-2 mt-1 text-sm text-white/90 font-medium">
+                      <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                      {selectedActivity.rating}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-6 space-y-6">
+                  <div>
+                    <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">Description</h3>
+                    <p className="text-foreground leading-relaxed">
+                      {selectedActivity.description}
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl bg-primary/5 p-4 border border-primary/10">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Sparkles className="h-4 w-4 text-primary" />
+                      <h3 className="text-sm font-semibold text-primary">Why we chose this for you</h3>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      {selectedActivity.reason}
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 pt-2">
+                    <div className="flex flex-col rounded-lg bg-muted/30 p-3">
+                      <span className="text-xs text-muted-foreground">Estimated Cost</span>
+                      <span className="font-semibold text-foreground">
+                        {selectedActivity.cost > 0 ? `$${selectedActivity.cost}` : "Free"}
+                      </span>
+                    </div>
+                     <div className="flex flex-col rounded-lg bg-muted/30 p-3">
+                      <span className="text-xs text-muted-foreground">Start Time</span>
+                      <span className="font-semibold text-foreground">{selectedActivity.time}</span>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </Layout>
   );

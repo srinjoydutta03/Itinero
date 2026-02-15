@@ -15,6 +15,7 @@ export interface Activity {
   description: string;
   image: string;
   rating: number;
+  reason: string;
 }
 
 export interface DayPlan {
@@ -136,7 +137,8 @@ export const generateMockItinerary = (details: TripDetails): Itinerary => {
         cost: 45 * travelers,
         description: "Classic French bistro with amazing onion soup.",
         image: "/src/assets/food-1.jpg",
-        rating: 4.7
+        rating: 4.7,
+        reason: "Highly rated for authentic local cuisine and within walking distance of your hotel."
       },
       {
         id: "r2",
@@ -146,7 +148,8 @@ export const generateMockItinerary = (details: TripDetails): Itinerary => {
         cost: 120 * travelers,
         description: "Fine dining experience in a glass conservatory.",
         image: "/src/assets/food-2.jpg",
-        rating: 4.9
+        rating: 4.9,
+        reason: "A Michelin-starred experience that fits within your luxury dining budget allocation."
       }
     ],
     days: [
@@ -163,7 +166,8 @@ export const generateMockItinerary = (details: TripDetails): Itinerary => {
             cost: 0,
             description: "Settle into your hotel and freshen up.",
             image: "/src/assets/hotel-1.jpg",
-            rating: 0
+            rating: 0,
+            reason: "Standard check-in time is 2:00 PM. This gives you time to unpack and relax before the evening activities."
           },
           {
             id: "a2",
@@ -173,7 +177,8 @@ export const generateMockItinerary = (details: TripDetails): Itinerary => {
             cost: 25 * travelers,
             description: "Watch the city lights come alive from the river.",
             image: "/src/assets/activity-1.jpg",
-            rating: 4.5
+            rating: 4.5,
+            reason: "Perfect for your first evening. It's low effort but high impact, offering a great overview of the city's landmarks at golden hour."
           }
         ]
       },
@@ -190,7 +195,8 @@ export const generateMockItinerary = (details: TripDetails): Itinerary => {
             cost: 20 * travelers,
             description: "Skip-the-line guided tour of the masterpieces.",
             image: "/src/assets/activity-2.jpg",
-            rating: 4.8
+            rating: 4.8,
+            reason: "Tuesday mornings are generally less crowded than weekends. 'Cloudy' weather makes it a great day for indoor cultural immersion."
           },
            {
             id: "a4",
@@ -200,7 +206,8 @@ export const generateMockItinerary = (details: TripDetails): Itinerary => {
             cost: 60 * travelers,
             description: "Taste the best cheese and wine in the artist district.",
             image: "/src/assets/food-1.jpg",
-            rating: 4.9
+            rating: 4.9,
+            reason: "You expressed interest in local cuisine. This area is famous for its authentic bistros and historical charm."
           }
         ]
       },
@@ -217,7 +224,8 @@ export const generateMockItinerary = (details: TripDetails): Itinerary => {
             cost: 0,
             description: "Visit the covered passages and antique shops.",
             image: "/src/assets/activity-2.jpg",
-            rating: 4.3
+            rating: 4.3,
+            reason: "Since rain is forecast for Day 3, we've scheduled indoor activities in the covered passages (Passages Couverts) to keep you dry while exploring."
           }
         ]
       }
