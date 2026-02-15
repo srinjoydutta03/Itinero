@@ -2,25 +2,47 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { Layout } from "@/components/layout";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon, MapPin, Users, Wallet, ArrowRight } from "lucide-react";
+import { Calendar as CalendarIcon, Users, Wallet, ArrowRight, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { AirportCombobox } from "@/components/airport-combobox";
 import heroBg from "@/assets/hero-bg.jpg";
 import { motion } from "framer-motion";
+
+const TRAVEL_STYLES = [
+  { value: "affordable", label: "Affordable", emoji: "💰", hint: "80% of budget" },
+  { value: "standard", label: "Standard", emoji: "✅", hint: "100% of budget" },
+  { value: "premium", label: "Premium", emoji: "⭐", hint: "120% of budget" },
+  { value: "luxury", label: "Luxury", emoji: "💎", hint: "No ceiling" },
+] as const;
 
 export default function Home() {
   const [_, setLocation] = useLocation();
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [toDate, setToDate] = useState<Date | undefined>(undefined);
+  const [origin, setOrigin] = useState("");
+  const [destination, setDestination] = useState("");
+  const [travelers, setTravelers] = useState<number>(2);
+  const [budget, setBudget] = useState<number>(3000);
+  const [travelStyle, setTravelStyle] = useState<"affordable" | "standard" | "premium" | "luxury">("standard");
   
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app we would pass these params, but for mockup we just go to dashboard
-    setLocation("/plan");
+    if (!origin || !destination || !date || !toDate) return;
+
+    const params = new URLSearchParams({
+      origin,
+      destination,
+      startDate: format(date, "yyyy-MM-dd"),
+      endDate: format(toDate, "yyyy-MM-dd"),
+      travelers: String(travelers || 2),
+      budget: String(budget || 3000),
+      travelStyle,
+    });
+    setLocation(`/plan?${params.toString()}`);
   };
 
   return (
@@ -54,118 +76,127 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="w-full max-w-4xl"
+            className="w-full max-w-5xl"
           >
-            <form onSubmit={handleSearch} className="grid grid-cols-1 gap-2 rounded-2xl bg-white/95 p-2 shadow-2xl backdrop-blur-sm lg:grid-cols-12 lg:items-center lg:gap-4 lg:p-3">
-              
-              {/* Origin Input */}
-              <div className="col-span-1 lg:col-span-2">
-                <div className="relative flex h-14 items-center rounded-xl bg-muted/50 px-4 transition-colors hover:bg-muted/80">
-                  <MapPin className="mr-3 h-5 w-5 text-muted-foreground" />
-                  <div className="flex w-full flex-col items-start text-left">
-                    <Label htmlFor="origin" className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">From</Label>
-                    <input 
-                      id="origin" 
-                      type="text" 
-                      placeholder="New York" 
-                      className="w-full bg-transparent text-sm font-medium text-foreground outline-none placeholder:text-muted-foreground/50"
-                      required
-                    />
+            <form onSubmit={handleSearch} className="rounded-2xl bg-white/95 p-3 shadow-2xl backdrop-blur-sm space-y-2 lg:space-y-3">
+              {/* Row 1: Origin, Destination, Dates */}
+              <div className="grid grid-cols-1 gap-2 lg:grid-cols-7 lg:items-center lg:gap-3">
+                {/* Origin Input */}
+                <div className="col-span-1 lg:col-span-2">
+                  <AirportCombobox
+                    label="From"
+                    placeholder="New York"
+                    value={origin}
+                    onSelect={setOrigin}
+                    inline
+                  />
+                </div>
+
+                {/* Destination Input */}
+                <div className="col-span-1 lg:col-span-2">
+                  <AirportCombobox
+                    label="To"
+                    placeholder="Paris"
+                    value={destination}
+                    onSelect={setDestination}
+                    inline
+                  />
+                </div>
+
+                {/* Date Picker Group */}
+                <div className="col-span-1 lg:col-span-3">
+                  <div className="flex gap-2">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button type="button" className="relative flex h-14 w-full flex-1 items-center rounded-xl bg-muted/50 px-3 transition-colors hover:bg-muted/80 overflow-hidden">
+                          <div className="flex w-full flex-col items-start text-left min-w-0">
+                             <Label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground whitespace-nowrap">From</Label>
+                             <span className={cn("text-sm font-medium truncate w-full", !date && "text-muted-foreground/50")}>
+                               {date ? format(date, "MMM dd") : "Date"}
+                             </span>
+                          </div>
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={date}
+                          onSelect={setDate}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button type="button" className="relative flex h-14 w-full flex-1 items-center rounded-xl bg-muted/50 px-3 transition-colors hover:bg-muted/80 overflow-hidden">
+                          <div className="flex w-full flex-col items-start text-left min-w-0">
+                             <Label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground whitespace-nowrap">To</Label>
+                             <span className={cn("text-sm font-medium truncate w-full", !toDate && "text-muted-foreground/50")}>
+                               {toDate ? format(toDate, "MMM dd") : "Date"}
+                             </span>
+                          </div>
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={toDate}
+                          onSelect={setToDate}
+                          initialFocus
+                          disabled={(date) => date < (new Date())}
+                        />
+                      </PopoverContent>
+                    </Popover>
                   </div>
                 </div>
               </div>
 
-              {/* Destination Input */}
-              <div className="col-span-1 lg:col-span-2">
-                <div className="relative flex h-14 items-center rounded-xl bg-muted/50 px-4 transition-colors hover:bg-muted/80">
-                  <MapPin className="mr-3 h-5 w-5 text-muted-foreground" />
-                  <div className="flex w-full flex-col items-start text-left">
-                    <Label htmlFor="destination" className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">To</Label>
-                    <input 
-                      id="destination" 
-                      type="text" 
-                      placeholder="Paris" 
-                      className="w-full bg-transparent text-sm font-medium text-foreground outline-none placeholder:text-muted-foreground/50"
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Date Picker Group */}
-              <div className="col-span-1 lg:col-span-3">
-                <div className="flex gap-2">
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <button type="button" className="relative flex h-14 w-full flex-1 items-center rounded-xl bg-muted/50 px-3 transition-colors hover:bg-muted/80 overflow-hidden">
-                        <div className="flex w-full flex-col items-start text-left min-w-0">
-                           <Label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground whitespace-nowrap">From</Label>
-                           <span className={cn("text-sm font-medium truncate w-full", !date && "text-muted-foreground/50")}>
-                             {date ? format(date, "MMM dd") : "Date"}
-                           </span>
-                        </div>
-                      </button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={date}
-                        onSelect={setDate}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <button type="button" className="relative flex h-14 w-full flex-1 items-center rounded-xl bg-muted/50 px-3 transition-colors hover:bg-muted/80 overflow-hidden">
-                        <div className="flex w-full flex-col items-start text-left min-w-0">
-                           <Label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground whitespace-nowrap">To</Label>
-                           <span className={cn("text-sm font-medium truncate w-full", !toDate && "text-muted-foreground/50")}>
-                             {toDate ? format(toDate, "MMM dd") : "Date"}
-                           </span>
-                        </div>
-                      </button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={toDate}
-                        onSelect={setToDate}
-                        initialFocus
-                        disabled={(date) => date < (new Date())}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-              </div>
-
-              {/* Travelers & Budget Group */}
-              <div className="col-span-1 flex gap-2 lg:col-span-3">
-                <div className="relative flex h-14 flex-1 items-center rounded-xl bg-muted/50 px-3 transition-colors hover:bg-muted/80">
-                  <Users className="mr-2 h-4 w-4 text-muted-foreground" />
+              {/* Row 2: Guests, Budget, Style, Submit */}
+              <div className="grid grid-cols-1 gap-2 lg:grid-cols-4 lg:items-center lg:gap-3">
+                {/* Guests */}
+                <div className="relative flex h-14 items-center rounded-xl bg-muted/50 px-3 transition-colors hover:bg-muted/80">
+                  <Users className="mr-2 h-4 w-4 text-muted-foreground shrink-0" />
                   <div className="flex w-full flex-col items-start text-left">
                     <Label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Guests</Label>
-                    <input type="number" min="1" placeholder="2" className="w-full bg-transparent text-sm font-medium outline-none" />
+                    <input type="number" min="1" placeholder="2" value={travelers || ""} onChange={(e) => setTravelers(Number(e.target.value))} className="w-full bg-transparent text-sm font-medium outline-none" />
                   </div>
                 </div>
-                <div className="relative flex h-14 flex-1 items-center rounded-xl bg-muted/50 px-3 transition-colors hover:bg-muted/80">
-                  <Wallet className="mr-2 h-4 w-4 text-muted-foreground" />
+
+                {/* Budget */}
+                <div className="relative flex h-14 items-center rounded-xl bg-muted/50 px-3 transition-colors hover:bg-muted/80">
+                  <Wallet className="mr-2 h-4 w-4 text-muted-foreground shrink-0" />
                   <div className="flex w-full flex-col items-start text-left">
                     <Label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Budget</Label>
-                    <input type="number" placeholder="$2k" className="w-full bg-transparent text-sm font-medium outline-none" />
+                    <input type="number" placeholder="3000" value={budget || ""} onChange={(e) => setBudget(Number(e.target.value))} className="w-full bg-transparent text-sm font-medium outline-none" />
                   </div>
                 </div>
-              </div>
 
-              {/* Submit Button */}
-              <div className="col-span-1 lg:col-span-2">
-                <Button type="submit" size="lg" className="h-14 w-full min-w-0 rounded-xl bg-primary px-2 text-base font-medium text-white shadow-lg transition-transform hover:scale-[1.02] hover:bg-primary/90 overflow-hidden whitespace-nowrap">
-                  <span className="truncate">Start Planning</span>
-                  <ArrowRight className="ml-2 h-5 w-5 flex-shrink-0" />
+                {/* Style */}
+                <div className="relative flex h-14 items-center rounded-xl bg-muted/50 px-3 transition-colors hover:bg-muted/80">
+                  <Sparkles className="mr-2 h-4 w-4 text-muted-foreground shrink-0" />
+                  <div className="flex w-full flex-col items-start text-left">
+                    <Label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Style</Label>
+                    <select
+                      value={travelStyle}
+                      onChange={(e) => setTravelStyle(e.target.value as any)}
+                      className="w-full bg-transparent text-sm font-medium outline-none appearance-none cursor-pointer"
+                    >
+                      {TRAVEL_STYLES.map((s) => (
+                        <option key={s.value} value={s.value}>
+                          {s.emoji} {s.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {/* Submit */}
+                <Button type="submit" size="lg" className="h-14 w-full rounded-xl bg-primary px-5 text-base font-medium text-white shadow-lg transition-transform hover:scale-[1.02] hover:bg-primary/90">
+                  <span>Start Planning</span>
+                  <ArrowRight className="ml-2 h-5 w-5 shrink-0" />
                 </Button>
               </div>
-
             </form>
             
             <div className="mt-6 flex flex-wrap justify-center gap-4 text-sm font-medium text-white/80">
