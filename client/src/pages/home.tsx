@@ -58,16 +58,33 @@ export default function Home() {
           >
             <form onSubmit={handleSearch} className="grid grid-cols-1 gap-2 rounded-2xl bg-white/95 p-2 shadow-2xl backdrop-blur-sm lg:grid-cols-12 lg:items-center lg:gap-4 lg:p-3">
               
-              {/* Destination Input */}
-              <div className="col-span-1 lg:col-span-4">
+              {/* Origin Input */}
+              <div className="col-span-1 lg:col-span-2">
                 <div className="relative flex h-14 items-center rounded-xl bg-muted/50 px-4 transition-colors hover:bg-muted/80">
                   <MapPin className="mr-3 h-5 w-5 text-muted-foreground" />
                   <div className="flex w-full flex-col items-start text-left">
-                    <Label htmlFor="destination" className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Where to?</Label>
+                    <Label htmlFor="origin" className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">From</Label>
+                    <input 
+                      id="origin" 
+                      type="text" 
+                      placeholder="New York" 
+                      className="w-full bg-transparent text-sm font-medium text-foreground outline-none placeholder:text-muted-foreground/50"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Destination Input */}
+              <div className="col-span-1 lg:col-span-2">
+                <div className="relative flex h-14 items-center rounded-xl bg-muted/50 px-4 transition-colors hover:bg-muted/80">
+                  <MapPin className="mr-3 h-5 w-5 text-muted-foreground" />
+                  <div className="flex w-full flex-col items-start text-left">
+                    <Label htmlFor="destination" className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">To</Label>
                     <input 
                       id="destination" 
                       type="text" 
-                      placeholder="Paris, France" 
+                      placeholder="Paris" 
                       className="w-full bg-transparent text-sm font-medium text-foreground outline-none placeholder:text-muted-foreground/50"
                       required
                     />
