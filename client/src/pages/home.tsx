@@ -74,29 +74,49 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Date Picker */}
+              {/* Date Picker Group */}
               <div className="col-span-1 sm:col-span-3">
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <button type="button" className="relative flex h-14 w-full items-center rounded-xl bg-muted/50 px-4 transition-colors hover:bg-muted/80">
-                      <CalendarIcon className="mr-3 h-5 w-5 text-muted-foreground" />
-                      <div className="flex w-full flex-col items-start text-left">
-                         <Label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">When?</Label>
-                         <span className={cn("text-sm font-medium", !date && "text-muted-foreground/50")}>
-                           {date ? format(date, "MMM dd, yyyy") : "Pick a date"}
-                         </span>
-                      </div>
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={date}
-                      onSelect={setDate}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+                <div className="flex gap-2">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button type="button" className="relative flex h-14 w-full flex-1 items-center rounded-xl bg-muted/50 px-3 transition-colors hover:bg-muted/80 overflow-hidden">
+                        <div className="flex w-full flex-col items-start text-left min-w-0">
+                           <Label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground whitespace-nowrap">From</Label>
+                           <span className={cn("text-sm font-medium truncate w-full", !date && "text-muted-foreground/50")}>
+                             {date ? format(date, "MMM dd") : "Date"}
+                           </span>
+                        </div>
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={date}
+                        onSelect={setDate}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button type="button" className="relative flex h-14 w-full flex-1 items-center rounded-xl bg-muted/50 px-3 transition-colors hover:bg-muted/80 overflow-hidden">
+                        <div className="flex w-full flex-col items-start text-left min-w-0">
+                           <Label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground whitespace-nowrap">To</Label>
+                           <span className={cn("text-sm font-medium truncate w-full", "text-muted-foreground/50")}>
+                             Date
+                           </span>
+                        </div>
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
               </div>
 
               {/* Travelers & Budget Group */}
@@ -119,9 +139,9 @@ export default function Home() {
 
               {/* Submit Button */}
               <div className="col-span-1 sm:col-span-2">
-                <Button type="submit" size="lg" className="h-14 w-full rounded-xl bg-primary text-base font-medium text-white shadow-lg transition-transform hover:scale-[1.02] hover:bg-primary/90">
-                  Start Planning
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                <Button type="submit" size="lg" className="h-14 w-full min-w-0 rounded-xl bg-primary px-2 text-base font-medium text-white shadow-lg transition-transform hover:scale-[1.02] hover:bg-primary/90 overflow-hidden whitespace-nowrap">
+                  <span className="truncate">Start Planning</span>
+                  <ArrowRight className="ml-2 h-5 w-5 flex-shrink-0" />
                 </Button>
               </div>
 
