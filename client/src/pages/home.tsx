@@ -55,10 +55,10 @@ export default function Home() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="w-full max-w-4xl"
           >
-            <form onSubmit={handleSearch} className="grid grid-cols-1 gap-2 rounded-2xl bg-white/95 p-2 shadow-2xl backdrop-blur-sm sm:grid-cols-12 sm:items-center sm:gap-4 sm:p-3">
+            <form onSubmit={handleSearch} className="grid grid-cols-1 gap-2 rounded-2xl bg-white/95 p-2 shadow-2xl backdrop-blur-sm lg:grid-cols-12 lg:items-center lg:gap-4 lg:p-3">
               
               {/* Destination Input */}
-              <div className="col-span-1 sm:col-span-4">
+              <div className="col-span-1 lg:col-span-4">
                 <div className="relative flex h-14 items-center rounded-xl bg-muted/50 px-4 transition-colors hover:bg-muted/80">
                   <MapPin className="mr-3 h-5 w-5 text-muted-foreground" />
                   <div className="flex w-full flex-col items-start text-left">
@@ -75,7 +75,7 @@ export default function Home() {
               </div>
 
               {/* Date Picker Group */}
-              <div className="col-span-1 sm:col-span-3">
+              <div className="col-span-1 lg:col-span-3">
                 <div className="flex gap-2">
                   <Popover>
                     <PopoverTrigger asChild>
@@ -120,7 +120,7 @@ export default function Home() {
               </div>
 
               {/* Travelers & Budget Group */}
-              <div className="col-span-1 flex gap-2 sm:col-span-3">
+              <div className="col-span-1 flex gap-2 lg:col-span-3">
                 <div className="relative flex h-14 flex-1 items-center rounded-xl bg-muted/50 px-3 transition-colors hover:bg-muted/80">
                   <Users className="mr-2 h-4 w-4 text-muted-foreground" />
                   <div className="flex w-full flex-col items-start text-left">
@@ -138,7 +138,7 @@ export default function Home() {
               </div>
 
               {/* Submit Button */}
-              <div className="col-span-1 sm:col-span-2">
+              <div className="col-span-1 lg:col-span-2">
                 <Button type="submit" size="lg" className="h-14 w-full min-w-0 rounded-xl bg-primary px-2 text-base font-medium text-white shadow-lg transition-transform hover:scale-[1.02] hover:bg-primary/90 overflow-hidden whitespace-nowrap">
                   <span className="truncate">Start Planning</span>
                   <ArrowRight className="ml-2 h-5 w-5 flex-shrink-0" />
