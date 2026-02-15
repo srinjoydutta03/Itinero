@@ -15,6 +15,7 @@ import { motion } from "framer-motion";
 export default function Home() {
   const [_, setLocation] = useLocation();
   const [date, setDate] = useState<Date | undefined>(new Date());
+  const [toDate, setToDate] = useState<Date | undefined>(undefined);
   
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,8 +104,8 @@ export default function Home() {
                       <button type="button" className="relative flex h-14 w-full flex-1 items-center rounded-xl bg-muted/50 px-3 transition-colors hover:bg-muted/80 overflow-hidden">
                         <div className="flex w-full flex-col items-start text-left min-w-0">
                            <Label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground whitespace-nowrap">To</Label>
-                           <span className={cn("text-sm font-medium truncate w-full", "text-muted-foreground/50")}>
-                             Date
+                           <span className={cn("text-sm font-medium truncate w-full", !toDate && "text-muted-foreground/50")}>
+                             {toDate ? format(toDate, "MMM dd") : "Date"}
                            </span>
                         </div>
                       </button>
@@ -112,7 +113,10 @@ export default function Home() {
                     <PopoverContent className="w-auto p-0" align="start">
                       <Calendar
                         mode="single"
+                        selected={toDate}
+                        onSelect={setToDate}
                         initialFocus
+                        disabled={(date) => date < (new Date())}
                       />
                     </PopoverContent>
                   </Popover>
